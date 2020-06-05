@@ -13,6 +13,14 @@ class linked_list {
 
   node<T>* head_;
 
+  //: check whether list is Empty
+  bool empty() {
+    if (!this->head_)
+      return true;
+    else
+      return false;
+  }
+
   //: count the size of the linked list, i.e. number of nodes inside the list
   unsigned size() const 
   {
@@ -143,6 +151,63 @@ class linked_list {
     }
   }
 
+  //: Flyod algorithm to detect the circle
+  bool is_circle()
+  {
+    if (!this->head_)
+      return false;
+    node<T>* slow;
+    node<T>* fast;
+    slow = this->head_;
+    fast = this->head_;
+    while (slow && fast && fast->next_) {
+      slow = slow->next_;
+      fast = fast->next_->next_;
+      if (slow == fast)
+        return true;
+    }
+    return false;
+  }
+
+  //: count the circle length
+  unsigned count_circle()
+  { 
+    // see this as reference: https://www.quora.com/How-does-Floyds-cycle-finding-algorithm-work-How-does-moving-the-tortoise-to-the-beginning-of-the-linked-list-while-keeping-the-hare-at-the-meeting-place-followed-by-moving-both-one-step-at-a-time-make-them-meet-at-starting-point-of-the-cycle#:~:text=Move%20one%20pointer%20by%20one,list%20doesn't%20have%20loop.&text=Refer%20Floyd's%20Cycle%20detection%20algorithm,point%20of%20cycle%20this%20link.
+
+    if (!this->is_circle())
+      return 0;
+    node<T>* slow;
+    node<T>* fast;
+    slow = this->head_;
+    fast = this->head_;
+    unsigned cnt = 0;
+    while (slow && fast && fast->next_) {
+      slow = slow->next_;
+      fast = fast->next_->next_;
+      cnt++;
+      if (slow == fast) {
+        // steps that slow takes
+        break; 
+      }
+    }
+    return cnt;
+  }
+
+  //: return 
+  node<T>* operator [](unsigned i) {
+    if (i >= this->size())
+      return nullptr;
+    unsigned cnt = 0;
+    node<T>* n = this->head_;
+    while (n) {
+      if (i == cnt)
+        return n;
+      n = n->next_;
+      cnt++;
+    }
+    return nullptr;
+  }
+  
 };
 
 #endif // list_h_
